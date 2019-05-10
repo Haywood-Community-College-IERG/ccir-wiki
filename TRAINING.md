@@ -12,6 +12,6 @@
 
 ## SAS
 
-* Using SAS® With Git: Bring a DevOps Mindset to Your SAS® Code (https://www.sas.com/en_us/webinars/using-sas-with-git.html)
+* Using SAS® With Git: Bring a DevOps Mindset to Your SAS® Code ([https://www.sas.com/en_us/webinars/using-sas-with-git.html](https://www.sas.com/en_us/webinars/using-sas-with-git.html))
 
 ## R
