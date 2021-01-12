@@ -43,8 +43,8 @@ N/A
 
 ## Python
 
-Python.org - [https://www.python.org/](https://www.python.org/) [If you are new to this, you should start with 3.7 and don't look back.]
-Anaconda - [https://www.anaconda.com/](https://www.anaconda.com/) [This is a comprehensive package that installs Python and quite a few common libraries and makes it easy to keep them up to date. If you are new to this, you should start with 3.7 and don't look back.]
-Pandas website - [https://pandas.pydata.org/](https://pandas.pydata.org/)
-Pandas Basics - Learn Python - [https://www.learnpython.org/en/Pandas_Basics](https://www.learnpython.org/en/Pandas_Basics)
-Data Analysis with Python and Pandas Tutorial Introduction - [https://pythonprogramming.net/data-analysis-python-pandas-tutorial-introduction/](https://pythonprogramming.net/data-analysis-python-pandas-tutorial-introduction/)
+* Python.org - [https://www.python.org/](https://www.python.org/) [If you are new to this, you should start with 3.7 and don't look back.]
+* Anaconda - [https://www.anaconda.com/](https://www.anaconda.com/) [This is a comprehensive package that installs Python and quite a few common libraries and makes it easy to keep them up to date. If you are new to this, you should start with 3.7 and don't look back.]
+* Pandas website - [https://pandas.pydata.org/](https://pandas.pydata.org/)
+* Pandas Basics - Learn Python - [https://www.learnpython.org/en/Pandas_Basics](https://www.learnpython.org/en/Pandas_Basics)
+* Data Analysis with Python and Pandas Tutorial Introduction - [https://pythonprogramming.net/data-analysis-python-pandas-tutorial-introduction/](https://pythonprogramming.net/data-analysis-python-pandas-tutorial-introduction/)
