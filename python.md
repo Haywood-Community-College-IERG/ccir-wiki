@@ -9,141 +9,169 @@
 
 ## Dplyr equivalents
 
-Add or replace column(s) 
-R: mutate
+### Add or replace column(s) 
+*R*
+    mutate(col_name = transformation_function_call)
 
-Pandas:
+Example
+    mutate( ID = str_pad(ID, 7, "left", pad="0"),
+            Term_Reporting_Year = as.integer(Term_Reporting_Year),
+            Code = coalesce( Code, "UNKNOWN" ),
+            Found = 'Y' ) %>%
 
-Can 
-assign(column_name=lambda df: df.Term_ID.str[4:],
-                Term_Index=lambda df: df.Term_ID.str[4:].map(term_indexes)
-            )
+*Pandas*
+    assign
+
+Example
+    assign(column_name=lambda df: df.Term_ID.str[4:],
+           Term_Index=lambda df: df.Term_ID.str[4:].map(term_indexes)
+          )
+    .assign(ID=lambda df: df.ID.str.zfill(7),
+            Code=lambda df: coalesce(df.Code,"UNKNOWN"),
+            Found='Y',
+        )
             
-Select columns
-R: select
+### Select columns
+*R*
+    select
 
-Pandas
-        .loc[lambda df: df.Term_ID.str[4:].isin(['FA','SP','SU'])]
-        
- Change column types
- R
-     mutate with 'as' functions
+Example
+    select( ID, Term_Reporting_Year, Total_Family_Income, Income_Range, Living_Arrangement )
+
+*Pandas*
+    .loc[]
+
+Example
+    .loc[lambda df: df.Term_ID.str[4:].isin(['FA','SP','SU'])]
+    .loc[:, ["ID", "Term_Reporting_Year", "Total_Family_Income", "Income_Range", "Living_Arrangement"]]
+
+
+### Change column types
+*R*
+    mutate with 'as' functions
      
-     Example
-         mutate(Term_Start_Date = as.Date(Term_Start_Date))
+Example
+    mutate(Term_Start_Date = as.Date(Term_Start_Date))
  
- Pandas
+Pandas
     . astype(col_types_dict) 
     
-    Example:
-        .astype({"Term_ID":"str", "Term_Start_Date":"datetime64", "Term_End_Date":"datetime64", "Term_Index":int})
-     
-  
+Example
+    .astype({"Term_Reporting_Year":int})
+    .astype({"Term_ID":"str", "Term_Start_Date":"datetime64", "Term_End_Date":"datetime64", "Term_Index":int})
+ 
 
-    Apply arbitrary functions
-    R
-        Not possible
-        
-    Pandas
-       .pipe(func)
-       
-       Example
-           . pipe(dfcsv, "ipeds_cohorts_1.csv", index=False)
+### Apply arbitrary functions
+*R*
+    Not possible as far as I know
 
-           .pipe((pd.merge, "left"), right=terms, on="Term_ID", how="inner")
-           
-           
-    Rename columns
-     R
-         rename(new_col=old_col) 
-         
-     Pandas
-     
-       . rename(columns=col_dict) 
-       
-       Example
-            .rename(columns={"Term_Reporting_Year" : "Cohort_Year",
-                             "Term_Start_Date"     : "Cohort_Start_Date" 
-                             })
-                          
-                             
-     Filter columns                  
-     R
-         filter(filter_str) 
-         
-     Pandas
-        .loc[lambda df: conditions_using_df] 
-        
-        Example   
-            .loc[lambda df: (df.Cohort_Year == report_year) & (df.Term_ID == report_term)]
-       
-        #.pipe(dfcsv, "cs_acyr_1.csv", index=False)
+*Pandas*
+    .pipe(func)
 
-Joining
-R
+Example
+    .pipe(dfcsv, "ipeds_cohorts_1.csv", index=False)
+    .pipe((pd.merge, "left"), right=terms, on="Term_ID", how="inner")
+    .pipe(dfcsv, "cs_acyr_1.csv", index=False)
+    .pipe(dfreplace, ["HOME","AWAY"], rvalue='N')
+
+    
+### Rename columns
+*R*
+    rename(new_col=old_col) 
+    
+*Pandas*
+    .rename(columns=col_dict) 
+
+Example
+    .rename(columns={"Term_Reporting_Year" : "Cohort_Year",
+                     "Term_Start_Date"     : "Cohort_Start_Date" 
+                    })
+
+                        
+### Filter columns                  
+*R*
+    filter(filter_str) 
+    
+*Pandas*
+    .loc[lambda df: conditions_using_df] 
+
+Example   
+    .loc[lambda df: (df.Cohort_Year == report_year) & (df.Term_ID == report_term)]
+
+
+### Joining
+*R*
     left_join(df1, df2) 
     
-Pandas
-   .pipe((pd.merge, "left"), right=df2, on=keys_list, how="left") 
+*Pandas*
+    .pipe((pd.merge, "left"), right=df2, on=keys_list, how="left") 
    
-   Example
-        .pipe((pd.merge,"left"), right=cs_comp, on=["ID", "Term_Reporting_Year", "EffectiveDatetime"], how="left")
+Example
+    .pipe((pd.merge,"left"), right=cs_comp, on=["ID", "Term_Reporting_Year", "EffectiveDatetime"], how="left")
 
-Drop columns
-R
+
+### Delete/Drop columns
+*R*
     select(-c(column_list)) 
     
-Pandas
+*Pandas*
    .drop(column_list, axis=1)
    
-   Example
-        .drop(['EffectiveDatetime'], axis=1)
+Example
+    .drop(['EffectiveDatetime'], axis=1)
 
-        #.pipe(dfcsv, "cs_acyr_2.csv", index=False)
 
-        #R mutate( ID = str_pad(ID, 7, "left", pad="0"),
-        #R         Term_Reporting_Year = as.integer(Term_Reporting_Year),
-        #R         Code = coalesce( Code, "UNKNOWN" ),
-        #R         Found = 'Y' ) %>%
-        .astype({"Term_Reporting_Year":int})
-        .assign(ID=lambda df: df.ID.str.zfill(7),
-                Code=lambda df: coalesce(df.Code,"UNKNOWN"),
-                Found='Y',
-            )
-        #.pipe(dfcsv, "cs_acyr_3.csv", index=False)
+### Pivot data long to wide
+*R*
+    pivot_wider
 
-        #R pivot_wider( id_cols = c(ID,Term_Reporting_Year,Total_Family_Income), 
-        #R              names_from = Code,
-        #R              values_from = Found ) %>%
-        .pivot_table(index=["ID","Term_Reporting_Year","Total_Family_Income"],
-                     columns="Code",
-                     values="Found",
-                     aggfunc="first")
-        .reset_index()
-        .pipe(dfreplace, ["HOME","AWAY"], rvalue='N')
+Example
+    pivot_wider( id_cols = c(ID,Term_Reporting_Year,Total_Family_Income), 
+                 names_from = Code,
+                 values_from = Found
+    )
 
-        #.pipe(dfcsv, "cs_acyr_4.csv", index=False)
+*Pandas*
+    .pivot_table(index=index_list, columns=column_name, values=value_col_name, aggfunc=aggregation_function)
 
-        #R mutate( Living_Arrangement = if_else( coalesce(HOME,'N') == 'Y', "HOME", "AWAY"),
-        #R         Income_Range = case_when(
-        #R             Total_Family_Income <=  30000 ~ 1,
-        #R             Total_Family_Income <=  48000 ~ 2,
-        #R             Total_Family_Income <=  75000 ~ 3,
-        #R             Total_Family_Income <= 110000 ~ 4,
-        #R             Total_Family_Income >  110000 ~ 5,
-        #R             TRUE ~ 99
-        #R         )) %>%
-        .assign(Living_Arrangement=lambda df: np.where(df.HOME=='Y', "HOME", "AWAY"))
-        #.pipe(assign_applyfunc, "Income_Range", getIncomeRange, "Total_Family_Income")
-        .assign(Income_Range=lambda df: pd.cut(df['Total_Family_Income'],
-                                               [-np.inf, 30000, 48000, 75000, 110000, np.inf],
-                                               labels=[1,2,3,4,5],
-                                               right=True))
-        .assign(ID=lambda df: df.Income_Range.str.zfill(99))
+Example
+    .pivot_table(index=["ID","Term_Reporting_Year","Total_Family_Income"],
+                 columns="Code",
+                 values="Found",
+                 aggfunc="first"
+                )
 
-        #R select( ID, Term_Reporting_Year, Total_Family_Income, Income_Range, Living_Arrangement ) %>%
-        .loc[:, ["ID", "Term_Reporting_Year", "Total_Family_Income", "Income_Range", "Living_Arrangement"]]
-        #R distinct()
-        .drop_duplicates()
+### C
+*R*
+    if_else( cond, true_val, false_val )
+    case_when( cond1 ~ val1, cond2 ~ val2, TRUE ~ else_val )
 
-        .pipe(dfcsv, "cs_acyr.csv", index=False)
+Example
+    mutate( Living_Arrangement = if_else( coalesce(HOME,'N') == 'Y', "HOME", "AWAY"),
+            Income_Range = case_when(
+                Total_Family_Income <=  30000 ~ 1,
+                Total_Family_Income <=  48000 ~ 2,
+                Total_Family_Income <=  75000 ~ 3,
+                Total_Family_Income <= 110000 ~ 4,
+                Total_Family_Income >  110000 ~ 5,
+                TRUE ~ 99
+         ))
+
+*Pandas*
+    .assign
+
+Example
+    .assign(Living_Arrangement=lambda df: np.where(df.HOME=='Y', "HOME", "AWAY"))
+    .assign(Income_Range=lambda df: pd.cut(df['Total_Family_Income'],
+                                            [-np.inf, 30000, 48000, 75000, 110000, np.inf],
+                                            labels=[1,2,3,4,5],
+                                            right=True))
+    .assign(ID=lambda df: df.Income_Range.str.zfill(99))
+
+### Remove duplicates
+*R*
+    distinct()
+
+*Pandas*
+    .drop_duplicates()
+
